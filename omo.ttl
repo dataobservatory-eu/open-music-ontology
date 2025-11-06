@@ -1,0 +1,109 @@
+@prefix omo:     <https://dataobservatory.eu/ontology/omo#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+
+<https://dataobservatory.eu/ontology/omo>
+  a owl:Ontology ;
+  dcterms:title "OMO: Open Music Ontology (minimal bridge)"@en ;
+  dcterms:description "A minimal, non-authoritative bridge vocabulary to link cultural heritage / research metadata with common industry identifiers and roles (e.g., ISRC, ISWC, a featured performer role) where the original standards are not published as ontologies."@en ;
+  dcterms:creator "dataobservatory-eu" ;
+  dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+  dcterms:issued "2025-11-06"^^xsd:date ;
+  owl:versionInfo "v0.1.0" ;
+  dcterms:publisher "Open Music Observatory" .
+
+### Core classes
+
+omo:Recording a owl:Class ;
+  rdfs:label "Recording"@en ;
+  rdfs:comment "A sound recording entity. Bridge for data that carries an ISRC code. Non-authoritative."@en ;
+  rdfs:seeAlso <https://isrc.ifpi.org/> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:MusicalWork a owl:Class ;
+  rdfs:label "Musical Work"@en ;
+  rdfs:comment "An abstract musical work entity. Bridge for data that carries an ISWC code. Non-authoritative."@en ;
+  rdfs:seeAlso <https://www.cisac.org/what-we-do/cis-net/iswc> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:ContributorRole a owl:Class ;
+  rdfs:label "Contributor Role"@en ;
+  rdfs:comment "A role performed by a person or organisation in relation to a recording or work (e.g., featured performer)."@en ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:FeaturedPerformer a owl:Class ;
+  rdfs:subClassOf omo:ContributorRole ;
+  rdfs:label "Featured Performer"@en ;
+  rdfs:comment "A prominently credited performer on a recording. Non-authoritative bridge concept; see DDEX ERN for role codings."@en ;
+  rdfs:seeAlso <https://kb.ddex.net/> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+### Core properties
+
+omo:hasISRC a owl:DatatypeProperty ;
+  rdfs:label "has ISRC"@en ;
+  rdfs:comment "Associates a Recording with its ISRC (International Standard Recording Code). Value is a lexical string; validation patterns are out-of-scope here."@en ;
+  rdfs:domain omo:Recording ;
+  rdfs:range xsd:string ;
+  rdfs:seeAlso <https://isrc.ifpi.org/> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:hasISWC a owl:DatatypeProperty ;
+  rdfs:label "has ISWC"@en ;
+  rdfs:comment "Associates a Musical Work with its ISWC (International Standard Musical Work Code). Value is a lexical string; validation patterns are out-of-scope here."@en ;
+  rdfs:domain omo:MusicalWork ;
+  rdfs:range xsd:string ;
+  rdfs:seeAlso <https://iswc.org/> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:hasContributorRole a owl:ObjectProperty ;
+  rdfs:label "has contributor role"@en ;
+  rdfs:comment "Links a Recording or Musical Work to a role instance (e.g., FeaturedPerformer) that can in turn reference an agent."@en ;
+  rdfs:domain owl:Thing ;  # kept broad for pragmatic reuse
+  rdfs:range  omo:ContributorRole ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:agent a owl:ObjectProperty ;
+  rdfs:label "agent"@en ;
+  rdfs:comment "Connects a role node to the agent (person or org) who holds that role."@en ;
+  rdfs:domain omo:ContributorRole ;
+  rdfs:range  foaf:Agent ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+### Release category bridge terms (from DDEX ERN / ReleaseProfile)
+
+omo:Release a owl:Class ;
+  rdfs:label "Release"@en ;
+  rdfs:comment "A curated bundle of recordings made available as a unit for distribution (e.g., single, album, EP). Non-authoritative bridge term; aligns conceptually with DDEX Release and ReleaseProfile."@en ;
+  rdfs:seeAlso <https://kb.ddex.net/reference/ddex-ern-releaseprofile> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:ReleaseCategory a owl:Class ;
+  rdfs:label "Release Category"@en ;
+  rdfs:comment "A category describing the commercial or contextual type of a Release, such as Album, Single, or EP."@en ;
+  rdfs:seeAlso <https://kb.ddex.net/reference/ddex-releasecategory> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:Album a owl:Class ;
+  rdfs:subClassOf omo:ReleaseCategory ;
+  rdfs:label "Album"@en ;
+  rdfs:comment "A release consisting of multiple sound recordings, typically issued as a cohesive unit. Bridge concept referencing DDEX ReleaseCategory 'Album'."@en ;
+  rdfs:seeAlso <https://kb.ddex.net/reference/ddex-releasecategory> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:Single a owl:Class ;
+  rdfs:subClassOf omo:ReleaseCategory ;
+  rdfs:label "Single"@en ;
+  rdfs:comment "A release consisting of one main track, possibly with one or more associated tracks. Bridge concept referencing DDEX ReleaseCategory 'Single'."@en ;
+  rdfs:seeAlso <https://kb.ddex.net/reference/ddex-releasecategory> ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
+
+omo:hasReleaseCategory a owl:ObjectProperty ;
+  rdfs:label "has release category"@en ;
+  rdfs:comment "Links a Release entity to its category (Album, Single, etc.). Non-authoritative bridge property."@en ;
+  rdfs:domain omo:Release ;
+  rdfs:range omo:ReleaseCategory ;
+  rdfs:isDefinedBy <https://dataobservatory.eu/ontology/omo> .
