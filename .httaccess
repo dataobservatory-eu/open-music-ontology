@@ -1,0 +1,10 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+# If request header asks for Turtle (RDF)
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^$ omo.ttl [L]
+
+# Otherwise show the HTML landing page
+RewriteRule ^$ index.html [L]
+

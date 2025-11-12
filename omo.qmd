@@ -1,0 +1,142 @@
+---
+title: "Open Music Ontology"
+subtitle: "A minimal, non-authoritative bridge vocabulary that connects open cultural heritage and research metadata with common industry identifiers and release categories (version 0.1.0 - proof of concept)"
+author:
+  - name: "Antal, Dániel"
+    orcid: 0000-0001-7513-6760
+version: "0.1.0"
+DOI: 10.5281/zenodo.17541357
+repo-url: https://github.com/dataobservatory-eu/open-music-data-white-paper
+repo-actions: [edit, issue, source]
+format: 
+   html: 
+     toc-depth: 3
+   pdf:
+    colorlinks: true
+    toc-depth: 3
+    latex: 
+       - lof: true
+papersize: A4
+editor: visual
+---
+
+# OMO: Open Music Ontology
+
+The **Open Music Observatory (OMO)** does not seek to create new ontologies.  
+Instead, it **integrates and reuses existing, well-established data models** from the open data, research, and cultural heritage ecosystems.
+
+In practice, this means that our data spaces and pilot projects (e.g. SKCMDb, Finno-Ugric Data Space, TextileBase) combine metadata derived from:
+
+- **Open Government & Open Science:**  
+  [DCAT-AP](https://joinup.ec.europa.eu/collection/dcat-ap) — the European data portal metadata model.
+- **Cultural Heritage & GLAM:**  
+  [EDM](https://pro.europeana.eu/page/edm-documentation) (Europeana Data Model),  
+  [CIDOC CRM](https://www.cidoc-crm.org/), and [Records in Contexts (RiC)](https://www.ica.org/standards/RiC/).
+- **Emerging Cultural Infrastructure:**  
+  [High-Definition & Collaborative Cultural Data Infrastructure (HDTO)](https://pro.europeana.eu/page/european-collaborative-cloud-for-cultural-heritage).
+- **Common Metadata Principles:**  
+  [Dublin Core Terms (DCTERMS)](https://www.dublincore.org/specifications/dublin-core/dcmi-terms/) — for general metadata interoperability.
+- **Music Industry Standards:**  
+  [ISWC](https://www.cisac.org/what-we-do/cis-net/iswc) for musical works,  
+  [ISRC](https://isrc.ifpi.org/) for sound recordings,  
+  [DDEX](https://kb.ddex.net/) for metadata exchange and release categorisation.
+
+Our goal is not to add another layer of complexity, but to **connect these established models** so that cultural heritage data, rights management systems, and research metadata can interoperate seamlessly.
+
+## Semantic Architecture
+
+The Observatory employs a **Wikibase-based ontology layer**, derived from the [Wikibase Ontology](https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format).  
+This layer defines classes and properties that are compatible with the Wikidata ecosystem.
+
+- **Equivalence links** (`owl:equivalentClass`, `owl:equivalentProperty`) map our entities to reference ontologies such as  
+  `dcterms:` (Dublin Core), `rico:` (Records in Contexts), `crm:` (CIDOC CRM), `edm:` (Europeana Data Model), and `dcat:` (DCAT-AP).
+
+- For **industry standards** like ISWC, ISRC, and DDEX that are not formally expressed in RDF/OWL,  
+  the Observatory provides a minimal ontological scaffolding under the  
+  [`Open Music Ontology (omo)`](https://w3id.org/openmusic/omo) namespace.  
+  Source files are hosted at <https://github.com/dataobservatory-eu/open-music-ontology>.
+
+This approach ensures that:
+
+- Industry identifiers can be represented and queried alongside heritage and research data; and  
+- Semantic equivalence is maintained across research, rights, and cultural collections.
+
+In short, **OMO acts as a semantic bridge rather than a new ontology.**
+
+---
+
+## Summary
+
+> The Open Music Ontology connects existing ontologies — it does not reinvent them.  
+> It provides a thin, open, and interoperable layer that unites public, research, and industry vocabularies to keep European music data FAIR and reusable.
+
+**Repository:** <https://github.com/dataobservatory-eu/open-music-ontology>  
+**Namespace (prefix):** `omo:` → <https://dataobservatory.eu/ontology/omo#>  
+**Status:** Proof of Concept (v0.1.0)
+
+## Purpose
+
+The **Open Music Ontology (OMO)** provides a **minimal, non-authoritative bridge vocabulary** connecting open cultural heritage and research metadata with **common industry identifiers and release categories** (e.g. ISRC, ISWC, album/single concepts).
+
+It does **not** re-publish ISRC, ISWC, or DDEX standards.  
+Instead, it offers neutral linking terms (`rdfs:seeAlso`, `owl:sameAs`) that enable interoperability in knowledge graphs such as the Slovak Comprehensive Music Database (SKCMDb), Open Music Europe, and related Data Spaces.
+
+## Included Concepts (v0.1.0)
+
+| Type | Term | Description |
+|:------|:------|:-------------|
+| **Class** | `omo:Recording` | A sound-recording entity (bridge for ISRC use). |
+| **Class** | `omo:MusicalWork` | An abstract musical work (bridge for ISWC use). |
+| **Class** | `omo:ContributorRole` | A role performed by a person or organisation. |
+| **Subclass** | `omo:FeaturedPerformer` | A performer given primary credit. |
+| **Property** | `omo:hasISRC` | Associates a Recording with an ISRC code. |
+| **Property** | `omo:hasISWC` | Associates a Musical Work with an ISWC code. |
+| **Property** | `omo:hasContributorRole` | Links an entity to its contributor role. |
+| **Property** | `omo:agent` | Connects a role node to the performing agent. |
+| **Class** | `omo:Release` | A curated bundle of recordings (album, single). |
+| **Class** | `omo:ReleaseCategory` | Category describing a release type. |
+| **Subclass** | `omo:Album` | A release consisting of multiple recordings. |
+| **Subclass** | `omo:Single` | A release containing one main track. |
+| **Property** | `omo:hasReleaseCategory` | Links a Release to its category. |
+
+## Example (Conceptual)
+
+```
+turtle
+@prefix omo: <https://dataobservatory.eu/ontology/omo#> .
+@prefix ex:  <https://example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ex:rec001 a omo:Recording ;
+  omo:hasISRC "SK0012345678" ;
+  omo:hasContributorRole ex:role1 .
+
+ex:work001 a omo:MusicalWork ;
+  omo:hasISWC "T-123.456.789-Z" .
+
+ex:role1 a omo:FeaturedPerformer ;
+  omo:agent ex:johnDoe .
+
+ex:johnDoe a foaf:Person ;
+  foaf:name "John Doe" .
+
+ex:release001 a omo:Release ;
+  omo:hasReleaseCategory omo:Album ;
+  omo:hasContributorRole ex:role1 .
+```
+
+⚠️ Disclaimer
+
+This ontology is not affiliated with IFPI (ISRC), CISAC (ISWC), DDEX, or any other rights holder. It simply provides neutral helper terms for research and cultural data interoperability.
+
+For authoritative specifications, visit:
+
+-   ISRC: <https://isrc.ifpi.org>
+-   ISWC: <https://www.cisac.org/Newsroom/news-releases/cisac-launches-major-project-upgrade-international-musical-work-identifier>
+-   DDEX: <https://kb.ddex.net>
+
+## License & Citation
+
+© 2025 Daniel Antal — Released under [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/deed.en) (CC-BY 4.0).
+
+Daniel Antal (2025). Open Music Ontology: A minimal, non-authoritative bridge vocabulary that connects open cultural heritage and research metadata with common industry identifiers and release categories (version 0.1.0 - roof of concept). Open Music Observatory. <https://doi.org/10.5281/zenodo.17541357>
